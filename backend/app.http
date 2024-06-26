@@ -1,0 +1,20 @@
+### add book
+POST http://localhost:8000/api/create-book
+Content-Type: application/json
+
+  {
+    "title": "Moby-Dick",
+    "author": "Herman Melville",
+    "year": 1851
+  }
+
+### update
+### add book
+PUT http://localhost:8000/api/update-book/1
+Content-Type: application/json
+
+  {
+    "title": "To Us",
+    "author": "Tiffany Nyawira",
+    "year": 2022
+  }
