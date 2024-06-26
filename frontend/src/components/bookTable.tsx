@@ -37,12 +37,16 @@ const BookTable = ({ books, onDelete, onEdit }: BookTableProps) => {
               <td className="py-2">{book.author}</td>
               <td className="py-2">{book.year}</td>
               <td className="py-2">
-                <button onClick={() => onEdit(book.id)} className="bg-blue-500 text-white p-2 rounded-md mx-1">
+              {book.id !== undefined && (
+                <>  
+                <button onClick={() => onEdit(book.id!)} className="bg-blue-500 text-white p-2 rounded-md mx-1">
                   Edit
                 </button>
-                <button onClick={() => onDelete(book.id)} className="bg-red-600 text-white p-2 rounded-md mx-1">
+                <button onClick={() => onDelete(book.id!)} className="bg-red-600 text-white p-2 rounded-md mx-1">
                   Delete
                 </button>
+                </>
+              )}
               </td>
             </tr>
           ))}
