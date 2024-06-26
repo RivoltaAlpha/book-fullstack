@@ -1,73 +1,121 @@
 import { useReducer, useEffect, useState } from 'react';
-import useLocalStorage from './components/localStorage';
+import axios from 'axios';
 import BookForm from './components/bookForm';
 import BookTable from './components/bookTable';
 import { BookAction, Book } from "./types/types";
 
+const API_URL = "http://localhost:8000/api";
+
 const bookReducer = (state: Book[], action: BookAction): Book[] => {
   switch (action.type) {
+    case 'INIT':
+      return action.books || [];
     case 'ADD_BOOK':
       return [...state, action.book];
     case 'EDIT_BOOK':
       return state.map((book) =>
-        book.title === action.oldBook.title ? action.newBook : book
+        book.id === action.oldBook.id ? action.newBook : book
       );
     case 'DELETE_BOOK':
-      return state.filter((book) => book.title !== action.book.title);
+      return state.filter((book) => book.id !== action.id);
     default:
       return state;
   }
 };
 
 const BookAppReducer = () => {
-  const [books, setBooks] = useLocalStorage<Book[]>('books', []);
-  const [state, dispatch] = useReducer(bookReducer, books);
+  const [state, dispatch] = useReducer(bookReducer, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [currentBook, setCurrentBook] = useState<Book | null>(null);
 
-  useEffect(() => {
-    setBooks(state);
-  }, [state, setBooks]);
-
-  useEffect(() => {
-    setFilteredBooks(
-      books.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [books, searchTerm]);
-
-  const addBook = (book: Book) => {
-    dispatch({ type: 'ADD_BOOK', book });
-  };
-
-  const editBook = (newBook: Book) => {
-    if (currentBook) {
-      dispatch({ type: 'EDIT_BOOK', oldBook: currentBook, newBook });
-      setCurrentBook(null);
+  const fetchBooks = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/books`);
+      dispatch({ type: 'INIT', books: response.data });
+      // console.log(response.data);
+    } catch (error) {
+      console.error("Failed to fetch books:", error);
     }
   };
 
-  const deleteBook = (book: Book) => {
-    dispatch({ type: 'DELETE_BOOK', book });
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  useEffect(() => {
+    setFilteredBooks(
+      state.filter((book) =>
+        book.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [state, searchTerm]);
+
+  const addBook = async (book: Book) => {
+    try {
+      const response = await axios.post(`${API_URL}/create-book`, book);
+      dispatch({ type: 'ADD_BOOK', book: response.data });
+    } catch (error) {
+      console.error("Failed to add book:", error);
+    }
   };
 
-  const handleEdit = (book: Book) => {
-    setCurrentBook(book);
+  const editBook = async (book: Book) => {
+    console.log("button clicked");
+    console.log(currentBook);
+    if (currentBook) {
+      try {
+        const response = await axios.put(`${API_URL}/update-book/${book.id}`, book);
+        dispatch({ type: 'EDIT_BOOK',
+                  oldBook: currentBook,   
+                  newBook: response.data });
+                  setCurrentBook(null);
+      } catch (error) {
+        console.error("Failed to edit book:", error);
+      }
+    }
   };
+  const handleEdit = (id: number) => {
+    const bookToEdit = state.find((book) => book.id === id);
+    if (bookToEdit) {
+      setCurrentBook(bookToEdit);
+    }
+  };
+
+  const handleSubmit = async (book: Book) => {
+    if (currentBook) {
+      await editBook(book);
+    } else {
+      await addBook(book);
+    }
+    window.location.reload();
+  };
+
+  const deleteBook = async (id: number) => {
+    try {
+      await axios.delete(`${API_URL}/delete-book/${id}`);
+      dispatch({ type: 'DELETE_BOOK', id: id });
+    } catch (error) {
+      console.error("Failed to delete book:", error);
+    }
+  };
+
 
   return (
     <div className="container mx-auto p-4">
-      <BookForm addBook={addBook} editBook={editBook} currentBook={currentBook} />
+  
+      <BookForm
+        onSubmit={handleSubmit}
+        currentBook={currentBook}
+      />
       <input
         type="text"
         placeholder="Search by title"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 w-full mt-4  p-2 rounded-md"
+        className="border p-2 w-full mt-4 rounded-md"
       />
-      <BookTable books={filteredBooks} editBook={handleEdit} deleteBook={deleteBook} />
+      <BookTable books={filteredBooks} onEdit={handleEdit} onDelete={deleteBook} />
     </div>
   );
 };
