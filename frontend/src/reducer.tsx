@@ -4,7 +4,7 @@ import BookForm from './components/bookForm';
 import BookTable from './components/bookTable';
 import { BookAction, Book } from "./types/types";
 
-const API_URL = "http://localhost:8000/api";
+const API_URL = "https://bookmanapi.azurewebsites.net";
 
 const bookReducer = (state: Book[], action: BookAction): Book[] => {
   switch (action.type) {
