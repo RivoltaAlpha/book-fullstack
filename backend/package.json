@@ -1,6 +1,4 @@
 {
-  "name": ".",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
