@@ -65,9 +65,9 @@ const BookAppReducer = () => {
     console.log(currentBook);
     if (currentBook) {
       try {
-        const response = await axios.put(`${API_URL}/update-book/${book.id}`, book);
+        const response = await axios.put(`${API_URL}/update-book/${currentBook.id}`, book);
         dispatch({ type: 'EDIT_BOOK',
-                  oldBook: currentBook,   
+                  oldBook: currentBook,  
                   newBook: response.data });
                   setCurrentBook(null);
       } catch (error) {
@@ -75,11 +75,8 @@ const BookAppReducer = () => {
       }
     }
   };
-  const handleEdit = (id: number) => {
-    const bookToEdit = state.find((book) => book.id === id);
-    if (bookToEdit) {
-      setCurrentBook(bookToEdit);
-    }
+  const handleEdit = (book: Book) => { 
+    setCurrentBook(book);
   };
 
   const handleSubmit = async (book: Book) => {
@@ -88,7 +85,7 @@ const BookAppReducer = () => {
     } else {
       await addBook(book);
     }
-    window.location.reload();
+     window.location.reload();
   };
 
   const deleteBook = async (id: number) => {

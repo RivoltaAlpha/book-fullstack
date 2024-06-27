@@ -13,7 +13,7 @@ export interface Book {
 
 export interface BookTableProps {
   books: Book[];
-  onEdit: (id: number) => void;
+  onEdit: (book: Book) => void;
   onDelete: (id: number) => void;
 }
 
