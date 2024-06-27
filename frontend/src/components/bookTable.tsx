@@ -1,7 +1,8 @@
+// import { ClipLoader } from "react-spinners";
 import { BookTableProps } from "../types/types";
 import { useState, useCallback } from "react";
 
-const BookTable = ({ books, onDelete, onEdit }: BookTableProps) => {
+export const BookTable = ({ books, onDelete, onEdit }: BookTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
 
@@ -39,10 +40,10 @@ const BookTable = ({ books, onDelete, onEdit }: BookTableProps) => {
               <td className="py-2">
               {book.id !== undefined && (
                 <>  
-                <button onClick={() => onEdit(book)} className="bg-blue-500 text-white p-2 rounded-md mx-1">
+                <button onClick={() => onEdit(book)} className="bg-blue-900 text-white p-2 w-20 rounded-md mx-1">
                   Edit
                 </button>
-                <button onClick={() => onDelete(book.id!)} className="bg-red-600 text-white p-2 rounded-md mx-1">
+                <button onClick={() => onDelete(book.id!)} className="bg-red-600 w-20 text-white p-2 rounded-md mx-1">
                   Delete
                 </button>
                 </>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import BookForm from './components/bookForm';
 import BookTable from './components/bookTable';
 import { BookAction, Book } from "./types/types";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const API_URL = "https://bookmanapi.azurewebsites.net";
 
@@ -28,14 +29,18 @@ const BookAppReducer = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
   const [currentBook, setCurrentBook] = useState<Book | null>(null);
+  const [loadingInProgress, setLoading] = useState(false);
 
   const fetchBooks = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/books`);
       dispatch({ type: 'INIT', books: response.data });
       // console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch books:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -100,7 +105,6 @@ const BookAppReducer = () => {
 
   return (
     <div className="container mx-auto p-4">
-  
       <BookForm
         onSubmit={handleSubmit}
         currentBook={currentBook}
@@ -110,9 +114,25 @@ const BookAppReducer = () => {
         placeholder="Search by title"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 w-full mt-4 rounded-md"
+        className="border p-2 w-full mt-10 rounded-md w-3/4 bg-blue-100"
       />
-      <BookTable books={filteredBooks} onEdit={handleEdit} onDelete={deleteBook} />
+ {loadingInProgress ? (
+        <div className="flex justify-center items-center my-4">
+          <ClipLoader
+            color="#0099cc"
+            loading={loadingInProgress}
+            size={70}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        </div>
+      ) : (
+        <BookTable
+          books={filteredBooks}
+          onEdit={handleEdit}
+          onDelete={deleteBook}
+        />
+      )}
     </div>
   );
 };
