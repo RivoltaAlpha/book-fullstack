@@ -3,9 +3,9 @@ POST http://localhost:8000/api/create-book
 Content-Type: application/json
 
   {
-    "title": "Moby-Dick",
-    "author": "Herman Melville",
-    "year": 1851
+    "title": "To Us",
+    "author": "Tiffany Nyawira",
+    "year": 2022
   }
 
 ### update
@@ -18,3 +18,14 @@ Content-Type: application/json
     "author": "Tiffany Nyawira",
     "year": 2022
   }
+
+
+###
+GET http://localhost:8000/api/books
+
+###
+GET https://bookmanagementbackend-dqh7avfsd0hgg6dz.canadacentral-01.azurewebsites.net/books
+
+
+###
+GET http://localhost:8000/api/books
