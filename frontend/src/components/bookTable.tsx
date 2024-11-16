@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 
 export const BookTable = ({ books, onDelete, onEdit }: BookTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const booksPerPage = 5;
+  const booksPerPage = 10;
 
   const totalPages = Math.ceil(books.length / booksPerPage);
 
