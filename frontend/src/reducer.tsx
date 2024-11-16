@@ -5,7 +5,7 @@ import BookTable from './components/bookTable';
 import { BookAction, Book } from "./types/types";
 import ClipLoader from "react-spinners/ClipLoader";
 
-const API_URL = "https://bookmanapi.azurewebsites.net";
+const API_URL = "https://bookmanagementbackend-dqh7avfsd0hgg6dz.canadacentral-01.azurewebsites.net";
 
 const bookReducer = (state: Book[], action: BookAction): Book[] => {
   switch (action.type) {
@@ -114,7 +114,7 @@ const BookAppReducer = () => {
         placeholder="Search by title"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 w-full mt-10 rounded-md w-3/4 bg-blue-100"
+        className="border p-2 mt-10 rounded-md w-3/4 bg-blue-100"
       />
  {loadingInProgress ? (
         <div className="flex justify-center items-center my-4">
